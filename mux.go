@@ -203,10 +203,11 @@ func NewGroups() *Groups {
 
 // Register adds one or more route groups to the collection in a thread-safe manner.
 // This can be called at any time, even after the server has started.
-func (g *Groups) Register(groups ...Binder) {
+func (g *Groups) Register(groups ...Binder) *Groups {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 	g.groups = append(g.groups, groups...)
+	return g
 }
 
 // Bind applies all registered groups to the provided router, resolving their
