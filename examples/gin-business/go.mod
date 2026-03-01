@@ -5,6 +5,7 @@ go 1.18
 replace github.com/Just-maple/xmux => ../..
 
 require (
+	github.com/Just-maple/godi v0.0.0-20260301153115-0d958445f58f
 	github.com/Just-maple/xmux v0.0.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/google/uuid v1.6.0

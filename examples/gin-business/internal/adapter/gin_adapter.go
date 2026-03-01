@@ -7,9 +7,10 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Just-maple/xmux"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+
+	"github.com/Just-maple/xmux"
 )
 
 // GinRouter implements xmux.Router for Gin with production-ready features
@@ -28,7 +29,7 @@ type RouterConfig struct {
 func DefaultRouterConfig() RouterConfig {
 	return RouterConfig{
 		APIVersion: "v1",
-		DebugMode:  false,
+		DebugMode:  true,
 	}
 }
 

@@ -5,8 +5,9 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/Just-maple/xmux/examples/gin-business/internal/models"
 	"github.com/google/uuid"
+
+	"github.com/Just-maple/xmux/examples/gin-business/internal/models"
 )
 
 var (
@@ -139,6 +140,10 @@ func (r *InMemoryUserRepository) List(ctx context.Context, limit, offset int) ([
 	users := make([]*models.User, 0, len(r.users))
 	for _, user := range r.users {
 		users = append(users, user)
+	}
+
+	if limit == 0 {
+		limit = 10
 	}
 
 	// Simple pagination

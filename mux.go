@@ -194,11 +194,11 @@ type Groups struct {
 	groups []Binder // Registered route groups
 }
 
-// NewGroups creates a new empty Groups collection.
-func NewGroups() *Groups {
-	return &Groups{
-		groups: make([]Binder, 0),
-	}
+// NewGroups creates a new Groups collection.
+func NewGroups(groups ...Binder) *Groups {
+	group := &Groups{groups: make([]Binder, 0, len(groups))}
+	copy(group.groups, groups)
+	return group
 }
 
 // Register adds one or more route groups to the collection in a thread-safe manner.
