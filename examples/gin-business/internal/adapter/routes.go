@@ -17,7 +17,7 @@ type SuccessResponse struct {
 	Message string `json:"message,omitempty"`
 }
 
-func RegisterUserRoutes() *xmux.Groups {
+func RegisterUserRoutes() xmux.Groups {
 	type RegisterParams struct {
 		*types.CreateUserRequest
 	}

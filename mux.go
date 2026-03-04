@@ -187,36 +187,40 @@ func DefineGroup[Handler any](
 // Groups Collection
 // ============================================================================
 
-// Groups is a thread-safe collection of route groups that can be bound to a router
+type Groups interface {
+	Binder
+	Register(groups ...Binder) Groups
+}
+
+// groups is a thread-safe collection of route groups that can be bound to a router
 // as a single unit. It implements a registry pattern for route groups.
-type Groups struct {
+type groups struct {
 	mu     sync.Mutex
 	groups []Binder // Registered route groups
 }
 
 // NewGroups creates a new Groups collection.
-func NewGroups(groups ...Binder) *Groups {
-	group := &Groups{groups: make([]Binder, 0, len(groups))}
-	copy(group.groups, groups)
-	return group
+func NewGroups(gs ...Binder) Groups {
+	return &groups{groups: append(make([]Binder, 0, len(gs)), gs...)}
 }
 
 // Register adds one or more route groups to the collection in a thread-safe manner.
 // This can be called at any time, even after the server has started.
-func (g *Groups) Register(groups ...Binder) *Groups {
+func (g *groups) Register(groups ...Binder) Groups {
 	g.mu.Lock()
-	defer g.mu.Unlock()
 	g.groups = append(g.groups, groups...)
+	g.mu.Unlock()
 	return g
 }
 
 // Bind applies all registered groups to the provided router, resolving their
 // handler dependencies through the bind function. Returns the first error encountered,
 // if any.
-func (g *Groups) Bind(router Router, bind Bind) (err error) {
+func (g *groups) Bind(router Router, bind Bind) (err error) {
 	g.mu.Lock()
-	defer g.mu.Unlock()
-	for _, group := range g.groups {
+	gs := append(make([]Binder, 0, len(g.groups)), g.groups...)
+	g.mu.Unlock()
+	for _, group := range gs {
 		if err = group.Bind(router, bind); err != nil {
 			return
 		}

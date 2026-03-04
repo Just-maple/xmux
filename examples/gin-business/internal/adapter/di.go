@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/Just-maple/godi"
+
 	"github.com/Just-maple/xmux/examples/gin-business/internal/business"
 	"github.com/Just-maple/xmux/examples/gin-business/internal/repository"
 	"github.com/Just-maple/xmux/examples/gin-business/internal/types"
@@ -36,7 +37,7 @@ func InitSampleData(c *godi.Container) {
 
 	ctx := context.Background()
 
-	userService.CreateUser(ctx, &types.CreateUserRequest{
+	_, _ = userService.CreateUser(ctx, &types.CreateUserRequest{
 		Username: "admin",
 		Email:    "admin@example.com",
 		Password: "Admin123!",
@@ -44,7 +45,7 @@ func InitSampleData(c *godi.Container) {
 		Role:     "admin",
 	})
 
-	userService.CreateUser(ctx, &types.CreateUserRequest{
+	_, _ = userService.CreateUser(ctx, &types.CreateUserRequest{
 		Username: "user",
 		Email:    "user@example.com",
 		Password: "User123!",
