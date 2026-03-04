@@ -112,7 +112,7 @@ func main() {
     controller := NewController()
     userService := business.NewUserService()
 
-    userGroup := xmux.DefineGroup(func(r xmux.Router, svc *business.UserService) {
+    userGroup := xmux.ServiceGroup(func(r xmux.Router, svc *business.UserService) {
         xmux.Register(r, http.MethodPost, "/users", svc.CreateUser)
         xmux.Register(r, http.MethodGet, "/users", svc.ListUsers)
         xmux.Register(r, http.MethodGet, "/user", svc.GetUser)
@@ -195,8 +195,8 @@ func Register[Params any, Response any](
     options ...map[string]string,
 )
 
-// DefineGroup - 创建带有共享服务的路由组
-func DefineGroup[Service any](
+// ServiceGroup - 创建带有共享服务的路由组
+func ServiceGroup[Service any](
     fn func(router Router, handler Service),
     options ...map[string]string,
 ) Binder

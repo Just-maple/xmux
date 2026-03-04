@@ -11,7 +11,7 @@
 // 1. Define pure business logic functions (func(ctx, *Params) (Response, error))
 // 2. Create framework adapter (implement Router interface)
 // 3. Register routes with Register
-// 4. Organize route groups with DefineGroup
+// 4. Organize route groups with ServiceGroup
 // 5. Manage multiple groups with Groups
 package xmux
 
@@ -190,13 +190,13 @@ func MergeOptions(options []map[string]string, desc bool) map[string]string {
 	return opt
 }
 
-// RouterGroup represents a group of routes that share a common service.
+// serviceGroup represents a group of routes that share a common service.
 // It enables dependency injection for a specific service type and allows
 // registering multiple handlers that use the same service instance.
 //
 // Type parameters:
 //   - Service: the business logic service type (e.g., UserService, OrderService)
-type RouterGroup[Service any] struct {
+type serviceGroup[Service any] struct {
 	// register is the function that defines routes for this service
 	register func(router Router, handler Service)
 
@@ -213,7 +213,7 @@ type RouterGroup[Service any] struct {
 //
 // Returns:
 //   - error if dependency injection or route registration fails
-func (g RouterGroup[Service]) Bind(controller Controller, bind func(any) error) (err error) {
+func (g serviceGroup[Service]) Bind(controller Controller, bind func(any) error) (err error) {
 	var s Service
 	if err = bind(&s); err != nil {
 		return
@@ -245,7 +245,7 @@ func (fn registerFunc) Register(method string, path string, api Api, options ...
 	fn(method, path, api, options...)
 }
 
-// DefineGroup creates a new route group for a specific service type.
+// ServiceGroup creates a new route group for a specific service type.
 // This is the primary way to organize related routes with shared dependencies.
 //
 // Type parameters:
@@ -261,13 +261,13 @@ func (fn registerFunc) Register(method string, path string, api Api, options ...
 //
 // Example:
 //
-//	userGroup := xmux.DefineGroup(func(router xmux.Router, svc UserService) {
+//	userGroup := xmux.ServiceGroup(func(router xmux.Router, svc UserService) {
 //	    xmux.Register(router, http.MethodGet, "/users", svc.GetUser)
 //	    xmux.Register(router, http.MethodPost, "/users", svc.CreateUser)
 //	    xmux.Register(router, http.MethodDelete, "/users/:id", svc.DeleteUser)
 //	}, map[string]string{"prefix": "/api/v1"})
-func DefineGroup[Service any](fn func(router Router, handler Service), options ...map[string]string) Binder {
-	return RouterGroup[Service]{
+func ServiceGroup[Service any](fn func(router Router, handler Service), options ...map[string]string) Binder {
+	return serviceGroup[Service]{
 		options:  options,
 		register: fn,
 	}

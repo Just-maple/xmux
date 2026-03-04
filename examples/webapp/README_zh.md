@@ -235,17 +235,17 @@ func (a *Application) RegisterRoutes(ctrl interface {
     }
     
     // 定义路由组
-    userGroup := xmux.DefineGroup(func(r xmux.Router, svc *UserService) {
+    userGroup := xmux.ServiceGroup(func(r xmux.Router, svc *UserService) {
         xmux.Register(r, http.MethodPost, "/api/users", svc.CreateUser)
         xmux.Register(r, http.MethodGet, "/api/users/:id", svc.GetUser)
     })
     
-    productGroup := xmux.DefineGroup(func(r xmux.Router, svc *ProductService) {
+    productGroup := xmux.ServiceGroup(func(r xmux.Router, svc *ProductService) {
         xmux.Register(r, http.MethodPost, "/api/products", svc.CreateProduct)
         xmux.Register(r, http.MethodGet, "/api/products", svc.ListProducts)
     })
     
-    orderGroup := xmux.DefineGroup(func(r xmux.Router, svc *OrderService) {
+    orderGroup := xmux.ServiceGroup(func(r xmux.Router, svc *OrderService) {
         xmux.Register(r, http.MethodPost, "/api/orders", svc.CreateOrder)
         xmux.Register(r, http.MethodGet, "/api/orders/:id", svc.GetOrder)
     })

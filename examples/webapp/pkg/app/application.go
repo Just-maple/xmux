@@ -30,7 +30,7 @@ func (a *Application) RegisterRoutes(ctrl xmux.Controller) {
 		return godi.InjectAs(a.container, ptr)
 	}
 
-	userGroup := xmux.DefineGroup(func(r xmux.Router, svc *userService.UserService) {
+	userGroup := xmux.ServiceGroup(func(r xmux.Router, svc *userService.UserService) {
 		log.Println("Registering user routes")
 		xmux.Register(r, http.MethodPost, "/api/users", svc.CreateUser)
 		xmux.Register(r, http.MethodGet, "/api/users/:id", svc.GetUser)
@@ -40,7 +40,7 @@ func (a *Application) RegisterRoutes(ctrl xmux.Controller) {
 		})
 	})
 
-	productGroup := xmux.DefineGroup(func(r xmux.Router, svc *productService.ProductService) {
+	productGroup := xmux.ServiceGroup(func(r xmux.Router, svc *productService.ProductService) {
 		log.Println("Registering product routes")
 		xmux.Register(r, http.MethodPost, "/api/products", svc.CreateProduct)
 		xmux.Register(r, http.MethodGet, "/api/products/:id", svc.GetProduct)
@@ -53,7 +53,7 @@ func (a *Application) RegisterRoutes(ctrl xmux.Controller) {
 		})
 	})
 
-	orderGroup := xmux.DefineGroup(func(r xmux.Router, svc *orderService.OrderService) {
+	orderGroup := xmux.ServiceGroup(func(r xmux.Router, svc *orderService.OrderService) {
 		log.Println("Registering order routes")
 		xmux.Register(r, http.MethodPost, "/api/orders", svc.CreateOrder)
 		xmux.Register(r, http.MethodGet, "/api/orders/:id", svc.GetOrder)
