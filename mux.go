@@ -141,6 +141,22 @@ func (o optionsRouter) Register(method string, path string, api Handler, options
 	o.router.Register(method, path, api, append(o.options, options...)...)
 }
 
+// MergeOptions merges multiple maps of options into a single map.
+// It processes the input maps in the order they appear in the slice, or in descend order if specified.
+func MergeOptions(options []map[string]string, desc bool) map[string]string {
+	opt := make(map[string]string)
+	for i := 0; i < len(options); i++ {
+		ii := i
+		if !desc {
+			ii = len(options) - 1 - i
+		}
+		for k, v := range options[ii] {
+			opt[k] = v
+		}
+	}
+	return opt
+}
+
 // RouterGroup represents a group of routes that share the same handler interface
 // and can be registered together. It implements the Binder interface.
 type RouterGroup[Handler any] struct {
