@@ -266,7 +266,7 @@ func (fn registerFunc) Register(method string, path string, api Api, options ...
 //	    xmux.Register(router, http.MethodPost, "/users", svc.CreateUser)
 //	    xmux.Register(router, http.MethodDelete, "/users/:id", svc.DeleteUser)
 //	}, map[string]string{"prefix": "/api/v1"})
-func ServiceGroup[Service any](fn func(router Router, handler Service), options ...map[string]string) Binder {
+func ServiceGroup[Service any](fn func(r Router, s Service), options ...map[string]string) Binder {
 	return serviceGroup[Service]{
 		options:  options,
 		register: fn,
