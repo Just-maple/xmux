@@ -20,7 +20,7 @@ func NewController() *Controller {
 }
 
 // Handle implements xmux.Controller interface.
-func (c *Controller) Handle(method, path string, service any, api xmux.Api, opts ...map[string]string) {
+func (c *Controller) Handle(method, path string, api xmux.Api, opts ...map[string]string) {
 	c.app.Add(method, path, func(ctx *fiber.Ctx) error {
 		// Create bind function to parse request
 		bind := func(ptr any) error {

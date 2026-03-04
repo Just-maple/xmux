@@ -22,7 +22,7 @@ func NewController() *Controller {
 }
 
 // Handle implements xmux.Controller interface.
-func (c *Controller) Handle(method, path string, service any, api xmux.Api, opts ...map[string]string) {
+func (c *Controller) Handle(method, path string, api xmux.Api, opts ...map[string]string) {
 	c.mux.Method(method, path, http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		// Create bind function to parse request
 		bind := func(ptr any) error {

@@ -20,7 +20,7 @@ func NewController() *Controller {
 }
 
 // Handle implements xmux.Controller interface.
-func (c *Controller) Handle(method, path string, service any, api xmux.Api, opts ...map[string]string) {
+func (c *Controller) Handle(method, path string, api xmux.Api, opts ...map[string]string) {
 	c.mux.HandleFunc(path, func(w http.ResponseWriter, req *http.Request) {
 		// Check HTTP method
 		if req.Method != method {

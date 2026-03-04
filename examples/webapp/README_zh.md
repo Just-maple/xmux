@@ -263,7 +263,7 @@ type Controller struct {
     engine *gin.Engine
 }
 
-func (c *Controller) Handle(method, path string, service any, api xmux.Api, ...) {
+func (c *Controller) Handle(method, path string, api xmux.Api, ...) {
     c.engine.Handle(method, path, func(ctx *gin.Context) {
         bind := func(ptr any) error {
             if err := ctx.ShouldBindJSON(ptr); err != nil {

@@ -17,6 +17,8 @@ package xmux
 
 import (
 	"context"
+	"reflect"
+	"runtime"
 	"sync"
 )
 
@@ -41,6 +43,10 @@ type Api interface {
 	// Function returns the underlying function.
 	// Useful for reflection and advanced use cases.
 	Function() any
+
+	Name() string
+
+	Service() (any, reflect.Type)
 }
 
 // Controller represents a framework-specific handler controller.
@@ -53,7 +59,7 @@ type Controller interface {
 	// service: the business logic service instance (injected via Bind)
 	// api: the type-safe handler to invoke
 	// options: additional route configuration (middleware, metadata, etc.)
-	Handle(method string, path string, service any, api Api, options ...map[string]string)
+	Handle(method string, path string, api Api, options ...map[string]string)
 }
 
 // Router represents a route registrar.
@@ -82,6 +88,10 @@ type Binder interface {
 // It wraps a function with signature func(context.Context, *Params) (Response, error)
 // and provides type-safe invocation with automatic parameter binding.
 type function[Params any, Response any] func(context.Context, *Params) (Response, error)
+
+func (h function[Params, Response]) Service() (any, reflect.Type) {
+	return nil, nil
+}
 
 // Invoke executes the business logic function.
 // It first calls unmarshal to populate the params struct from the HTTP request,
@@ -112,6 +122,10 @@ func (h function[Params, Response]) Params() any {
 func (h function[Params, Response]) Response() any {
 	var zero Response
 	return zero
+}
+
+func (h function[Params, Response]) Name() string {
+	return runtime.FuncForPC(reflect.ValueOf(h).Pointer()).Name()
 }
 
 // Register registers a business logic function as a route handler.
@@ -200,14 +214,26 @@ type RouterGroup[Service any] struct {
 // Returns:
 //   - error if dependency injection or route registration fails
 func (g RouterGroup[Service]) Bind(controller Controller, bind func(any) error) (err error) {
-	var service Service
-	if err = bind(&service); err != nil {
+	var s Service
+	if err = bind(&s); err != nil {
 		return
 	}
 	g.register(registerFunc(func(method string, path string, api Api, options ...map[string]string) {
-		controller.Handle(method, path, service, api, append(g.options, options...)...)
-	}), service)
+		controller.Handle(method, path, serviceApi[Service]{
+			Api:  api,
+			impl: s,
+		}, append(g.options, options...)...)
+	}), s)
 	return
+}
+
+type serviceApi[Service any] struct {
+	Api
+	impl Service
+}
+
+func (api serviceApi[Service]) Service() (any, reflect.Type) {
+	return api.impl, reflect.TypeOf((*Service)(nil)).Elem()
 }
 
 // registerFunc is a function type that implements the Router interface.

@@ -4,8 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/Just-maple/xmux"
 	"github.com/gin-gonic/gin"
+
+	"github.com/Just-maple/xmux"
 )
 
 type Controller struct {
@@ -21,7 +22,7 @@ func NewController() *Controller {
 	}
 }
 
-func (c *Controller) Handle(method, path string, service any, api xmux.Api, options ...map[string]string) {
+func (c *Controller) Handle(method, path string, api xmux.Api, options ...map[string]string) {
 	c.engine.Handle(method, path, func(ctx *gin.Context) {
 		bind := func(ptr any) error {
 			if ctx.Request.Body == nil {
