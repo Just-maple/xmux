@@ -146,11 +146,11 @@ func (o optionsRouter) Register(method string, path string, api Handler, options
 func MergeOptions(options []map[string]string, desc bool) map[string]string {
 	opt := make(map[string]string)
 	for i := 0; i < len(options); i++ {
-		ii := i
-		if !desc {
-			ii = len(options) - 1 - i
+		o := options[i]
+		if desc {
+			o = options[len(options)-1-i]
 		}
-		for k, v := range options[ii] {
+		for k, v := range o {
 			opt[k] = v
 		}
 	}
